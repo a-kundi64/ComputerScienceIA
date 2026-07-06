@@ -1,0 +1,11 @@
+C001,Map Reading & Navigation
+C002,First Aid
+C003,Aircraft Recognition
+C004,Drill
+C005,Radio Communications
+C006,Leadership Exercises
+C007,Aerospace Technology
+C008,Shooting Safety
+C009,Teamwork & JNCO Development
+C010,Cyber & STEM Challenge
+C0012,Debate

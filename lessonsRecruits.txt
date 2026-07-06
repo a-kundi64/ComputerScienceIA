@@ -1,0 +1,12 @@
+R001,Attention & Stand At Ease,drill,1
+R002,Uniform & Turnout Standards,theory,2
+R003,Turning,drill,3
+R004,ATC Structure & Ranks,theory,4
+R005,Saluting,drill,5
+R006,Core Values & Code of Conduct,theory,6
+R007,Marching,drill,7
+R008,First Aid Basics,theory,8
+R009,Turning on the march,drill,9
+R010,Cadet Citizenship,theory,10
+R011,Drill mock,drill,11
+R012,Theory test mock,theory,12

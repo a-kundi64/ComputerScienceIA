@@ -86,7 +86,7 @@ with open ("recruitInstructors.txt", "r", encoding="utf-8") as file:
 RECRUIT_PRIORITY_IDS = {i["id"] for i in RECRUIT_INSTRUCTORS}
 
 
-# incase of no RECRUIT_INSTRUCTORS
+# in case of no RECRUIT_INSTRUCTORS
 ALL_INSTRUCTORS = INSTRUCTORS + RECRUIT_INSTRUCTORS
 
 

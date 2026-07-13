@@ -1,0 +1,16 @@
+# Virtual environment - never commit this, it's machine-specific and huge
+.venv/
+venv/
+env/
+
+# Python cache/compiled files
+__pycache__/
+*.pyc
+*.pyo
+
+# PyCharm project settings (usually personal, not shared)
+.idea/
+
+# OS junk files
+.DS_Store
+Thumbs.db

@@ -40,7 +40,8 @@ with open ("lessonsCadets.txt", "r", encoding="utf-8") as file:
      for line in file:
           line = line.strip().split(",")
           mydict = {"id":(line[0]),
-                        "title":(line[1]),}
+                        "title":(line[1]),
+                            "score":int(line[2])}
           lessonsCadets.append(mydict)
 
 lessonsRecruits= []
@@ -49,11 +50,22 @@ with open ("lessonsRecruits.txt", "r", encoding="utf-8") as file:
           line = line.strip().split(",")
           mydict = {"id":(line[0]),
                         "title":(line[1]),
-                        "type":(line[2]),
-                        "order":int(line[3]),}
+                            "type":(line[2]),
+                                "order":int(line[3])}
           lessonsRecruits.append(mydict)
 
-LESSONS = {"cadet": lessonsCadets,
+#score based system makes new list based of score to give each lesson a different weighting
+
+lessonsCadetsWeighted = []
+for line in lessonsCadets:
+    for order in range(line["score"]):
+        mydict = {"id":(line["id"]),
+                      "title":(line["title"])}
+        lessonsCadetsWeighted.append(mydict)
+
+print(lessonsCadetsWeighted)
+
+LESSONS = {"cadet": lessonsCadetsWeighted,
               "recruit": lessonsRecruits}
 
 #Instructors
@@ -64,9 +76,9 @@ with open ("instructors.txt", "r", encoding="utf-8") as file:
           line = line.strip().split(",")
           mydict = {"id":(line[0]),
                         "name":(line[1]),
-                        "rank":(line[2]),
-                        "cadet":[line[3],line[4],line[5]],
-                        "recruit":[line[6],line[7],line[8]],}
+                            "rank":(line[2]),
+                                "cadet":[line[3],line[4],line[5]],
+                                    "recruit":[line[6],line[7],line[8]]}
           INSTRUCTORS.append(mydict)
 
 # Designated recruit instructors
@@ -76,10 +88,10 @@ with open ("recruitInstructors.txt", "r", encoding="utf-8") as file:
      for line in file:
           line = line.strip().split(",")
           mydict = {"id":(line[0]),
-                        "name":(line[1]),
-                        "rank":(line[2]),
-                        "cadet":[line[3],line[4],line[5]],
-                        "recruit":[line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14],line[15],line[16],line[17]],}
+                            "name":(line[1]),
+                                "rank":(line[2]),
+                                    "cadet":[line[3],line[4],line[5]],
+                                        "recruit":[line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14],line[15],line[16],line[17]],}
           RECRUIT_INSTRUCTORS.append(mydict)
 
 RECRUIT_PRIORITY_IDS = {i["id"] for i in RECRUIT_INSTRUCTORS}
@@ -262,26 +274,26 @@ def generate():
 
 
     show("19:30 LESSON 1")
-    show(f"Cadets: {cadet_slots[0][0]['title']}")
-    show(f"Instructor: {cadet_slots[0][1]['name']}\n")
+    show(f"Cadets: {cadet_slots[0][0]["title"]}")
+    show(f"Instructor: {cadet_slots[0][1]["name"]}\n")
 
 
     if r_drill:
-         show(f"Recruits: {r_drill['title']} [Drill]")
-         show(f"Instructor: {r_drill_instr['name']}\n")
+         show(f"Recruits: {r_drill["title"]} [Drill]")
+         show(f"Instructor: {r_drill_instr["name"]}\n")
 
 
     show("20:15 Break\n")
 
 
     show("20:30 LESSON 2")
-    show(f"Cadets: {cadet_slots[1][0]['title']}")
-    show(f"Instructor: {cadet_slots[1][1]['name']}\n")
+    show(f"Cadets: {cadet_slots[1][0]["title"]}")
+    show(f"Instructor: {cadet_slots[1][1]["name"]}\n")
 
 
     if r_theory:
-         show(f"Recruits: {r_theory['title']} [Theory]")
-         show(f"Instructor: {r_theory_instr['name']}\n")
+         show(f"Recruits: {r_theory["title"]} [Theory]")
+         show(f"Instructor: {r_theory_instr["name"]}\n")
 
 
     show("21:45 End")
@@ -309,27 +321,27 @@ Date: {today}
 
 
 19:30 LESSON 1
-Cadets: {cadet_slots[0][0]['title']}
-Instructor: {cadet_slots[0][1]['name']}
+Cadets: {cadet_slots[0][0]["title"]}
+Instructor: {cadet_slots[0][1]["name"]}
 
 
 
 
-Recruits: {r_drill['title'] if r_drill else 'None'}
-Instructor: {r_drill_instr['name'] if r_drill_instr else 'UNASSIGNED'}
+Recruits: {r_drill["title"] if r_drill else "None"}
+Instructor: {r_drill_instr["name"] if r_drill_instr else "UNASSIGNED"}
 
 
 
 
 20:30 LESSON 2
-Cadets: {cadet_slots[1][0]['title']}
-Instructor: {cadet_slots[1][1]['name']}
+Cadets: {cadet_slots[1][0]["title"]}
+Instructor: {cadet_slots[1][1]["name"]}
 
 
 
 
-Recruits: {r_theory['title'] if r_theory else 'None'}
-Instructor: {r_theory_instr['name'] if r_theory_instr else 'UNASSIGNED'}
+Recruits: {r_theory["title"] if r_theory else "None"}
+Instructor: {r_theory_instr["name"] if r_theory_instr else "UNASSIGNED"}
 
 
 
@@ -351,13 +363,13 @@ Instructor: {r_theory_instr['name'] if r_theory_instr else 'UNASSIGNED'}
 def view_lessons():
     clear_output()
     show("CADET LESSONS:\n")
-    for l in LESSONS["cadet"]:
-         show(f"{l['id']} - {l['title']}")
+    for l in lessonsCadets:
+         show(f"{l["id"]} - {l["title"]} - {l["score"]}")
 
 
     show("\nRECRUIT LESSONS:\n")
     for l in sorted(LESSONS["recruit"], key=lambda x: x["order"]):
-         show(f"{l['id']} [{l['order']}] {l['type']} - {l['title']}")
+         show(f"{l["id"]} [{l["order"]}] {l["type"]} - {l["title"]}")
 
 
 
@@ -366,12 +378,39 @@ def view_instructors():
     clear_output()
     show("INSTRUCTORS:\n")
     for i in INSTRUCTORS:
-         show(f"{i['id']} - {i['name']} ({i['rank']})")
+         show(f"{i["id"]} - {i["name"]} ({i["rank"]})")
 
 
     show("\nRECRUIT INSTRUCTORS (priority for recruit lessons):\n")
     for i in RECRUIT_INSTRUCTORS:
-         show(f"{i['id']} - {i['name']} ({i['rank']})")
+         show(f"{i["id"]} - {i["name"]} ({i["rank"]})")
+
+
+def open_add_lesson_window():
+    window = tk.Toplevel(root)
+    window.title("Add lesson")
+    window.geometry("350x350")
+
+    ttk.Label(window, text="ID (e.g. C009):").pack(pady=(10, 0))
+    id_entry = ttk.Entry(window)
+    id_entry.pack()
+
+    ttk.Label(window, text="Lesson Title").pack(pady=(10, 0))
+    title_entry = ttk.Entry(window)
+    title_entry.pack()
+
+    def submit():
+        id_value = id_entry.get()
+        title_value = title_entry.get()
+        score_value = "10"
+        line = ",".join([id_value, title_value, score_value])
+
+        with open("lessonsCadets.txt", "a", encoding="utf-8") as file:
+            file.write(line + "\n")
+
+        window.destroy()
+
+    ttk.Button(window, text="Add lesson", command=submit).pack(pady=20)
 
 
 def open_add_instructor_window():
@@ -409,38 +448,95 @@ def open_add_instructor_window():
           line = ",".join([id_value, name_value, rank_value, cadet_value, recruit_value])
 
           with open("instructors.txt", "a", encoding="utf-8") as file:
-                file.write(line + "\n")
+              file.write(line + "\n")
 
           window.destroy()
 
      ttk.Button(window, text="Add Instructor", command=submit).pack(pady=20)
 
 
-def open_add_lesson_window():
-     window = tk.Toplevel(root)
-     window.title("Add lesson")
-     window.geometry("350x350")
+def lessonScore():
 
-     ttk.Label(window, text="ID (e.g. C009):").pack(pady=(10, 0))
-     id_entry = ttk.Entry(window)
-     id_entry.pack()
+    window = tk.Toplevel(root)
+    window.title("Lesson Evaluation")
+    window.geometry("400x300")
 
-     ttk.Label(window, text="Lesson Title").pack(pady=(10, 0))
-     title_entry = ttk.Entry(window)
-     title_entry.pack()
+    ttk.Label(window,text="Select lesson:").pack(pady=(20, 5))
 
-     def submit():
-          id_value = id_entry.get()
-          title_value = title_entry.get()
+    # Get all cadet lesson titles
 
-          line = ",".join([id_value, title_value])
+    lesson_titles = []
 
-          with open("lessonsCadets.txt", "a", encoding="utf-8") as file:
+    for lesson in lessonsCadets:
+        lesson_titles.append(lesson["title"])
+
+    # Variable that stores the selected lesson
+
+    selected_lesson = tk.StringVar()
+
+    # Creates dropdown menu
+
+    lesson_dropdown = ttk.Combobox(window,textvariable=selected_lesson, values=lesson_titles, state="readonly")
+
+    lesson_dropdown.pack(pady=10)
+
+    lesson_dropdown.current(0)
+
+    def bad():
+
+        new_lines = []
+
+        with open("lessonsCadets.txt", "r", encoding="utf-8") as file:
+
+            for line in file:
+
+                parts = line.strip().split(",")
+
+                if parts[1] == selected_lesson.get():
+                    score = int(parts[2])
+
+                    score = score - 1
+
+                    parts[2] = str(score)
+
+                new_lines.append(",".join(parts))
+
+        with open("lessonsCadets.txt", "w", encoding="utf-8") as file:
+            for line in new_lines:
                 file.write(line + "\n")
 
-          window.destroy()
+        window.destroy()
 
-     ttk.Button(window, text="Add lesson", command=submit).pack(pady=20)
+    def ok():
+        window.destroy()
+
+    def good():
+
+        new_lines = []
+
+        with open("lessonsCadets.txt", "r", encoding="utf-8") as file:
+
+            for line in file:
+
+                parts = line.strip().split(",")
+
+                if parts[1] == selected_lesson.get():
+                    score = int(parts[2])
+
+                    score = score + 1
+
+                    parts[2] = str(score)
+
+                new_lines.append(",".join(parts))
+
+        with open("lessonsCadets.txt", "w", encoding="utf-8") as file:
+            for line in new_lines:
+                file.write(line + "\n")
+        window.destroy()
+
+    ttk.Button(window,text="bad",command=bad).pack(pady=20)
+    ttk.Button(window,text="ok",command=ok).pack(pady=20)
+    ttk.Button(window,text="good",command=good).pack(pady=20)
 
 
 def exit_app():
@@ -506,9 +602,10 @@ btn_frame.pack(pady=10)
 ttk.Button(btn_frame, text="Generate Programme", command=generate).grid(row=0, column=0, padx=5)
 ttk.Button(btn_frame, text="View Lessons", command=view_lessons).grid(row=0, column=1, padx=5)
 ttk.Button(btn_frame, text="View Instructors", command=view_instructors).grid(row=0, column=2, padx=5)
-ttk.Button(btn_frame, text="Add Instructor", command=open_add_instructor_window).grid(row=0, column=3, padx=5)
-ttk.Button(btn_frame, text="Add Lesson", command=open_add_lesson_window).grid(row=0, column=4, padx=5)
-ttk.Button(btn_frame, text="Exit", command=exit_app).grid(row=0, column=5, padx=5)
+ttk.Button(btn_frame, text="Add Lesson", command=open_add_lesson_window).grid(row=0, column=3, padx=5)
+ttk.Button(btn_frame, text="Add Instructor", command=open_add_instructor_window).grid(row=0, column=4, padx=5)
+ttk.Button(btn_frame, text="Lesson Evaluation", command=lessonScore).grid(row=0, column=5, padx=5)
+ttk.Button(btn_frame, text="Exit", command=exit_app).grid(row=0, column=6, padx=5)
 
 
 

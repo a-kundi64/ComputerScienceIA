@@ -6,7 +6,6 @@ import requests
 
 
 
-
 # DISCORD CONFIG
 
 

@@ -6,7 +6,6 @@ import requests
 
 
 
-
 # DISCORD CONFIG
 
 
@@ -19,91 +18,74 @@ NCO_ROLE_ID = "999662869840920657"
 
 
 def send_to_discord(message):
-   data = {"content": message}
+    data = {"content": message}
 
 
-   try:
-       response = requests.post(DISCORD_WEBHOOK, json=data)
-       print("Discord status:", response.status_code)
-       print("Response:", response.text)
+    try:
+         response = requests.post(DISCORD_WEBHOOK, json=data)
+         print("Discord status:", response.status_code)
+         print("Response:", response.text)
 
 
-   except Exception as e:
-       print("Error:", e)
+    except Exception as e:
+         print("Error:", e)
 
 
 
 
 # LESSON DATA
 
+lessonsCadets= []
+with open ("lessonsCadets.txt", "r", encoding="utf-8") as file:
+     for line in file:
+          line = line.strip().split(",")
+          mydict = {"id":(line[0]),
+                        "title":(line[1]),}
+          lessonsCadets.append(mydict)
 
+lessonsRecruits= []
+with open ("lessonsRecruits.txt", "r", encoding="utf-8") as file:
+     for line in file:
+          line = line.strip().split(",")
+          mydict = {"id":(line[0]),
+                        "title":(line[1]),
+                        "type":(line[2]),
+                        "order":int(line[3]),}
+          lessonsRecruits.append(mydict)
 
+LESSONS = {"cadet": lessonsCadets,
+              "recruit": lessonsRecruits}
 
-LESSONS = {
-   "cadet": [
-       {"id": "C001", "title": "Map Reading & Navigation"},
-       {"id": "C002", "title": "First Aid"},
-       {"id": "C003", "title": "Aircraft Recognition"},
-       {"id": "C004", "title": "Drill"},
-       {"id": "C005", "title": "Radio Communications"},
-       {"id": "C006", "title": "Leadership Exercises"},
-       {"id": "C007", "title": "Aerospace Technology"},
-       {"id": "C008", "title": "Shooting Safety"},
-       {"id": "C009", "title": "Teamwork & JNCO Development"},
-       {"id": "C010", "title": "Cyber & STEM Challenge"},
-   ],
-   "recruit": [
-       {"id": "R001", "title": "Attention & Stand At Ease", "type": "drill", "order": 1},
-       {"id": "R002", "title": "Uniform & Turnout Standards", "type": "theory", "order": 2},
-       {"id": "R003", "title": "Turning", "type": "drill", "order": 3},
-       {"id": "R004", "title": "ATC Structure & Ranks", "type": "theory", "order": 4},
-       {"id": "R005", "title": "Saluting", "type": "drill", "order": 5},
-       {"id": "R006", "title": "Core Values & Code of Conduct", "type": "theory", "order": 6},
-       {"id": "R007", "title": "Marching", "type": "drill", "order": 7},
-       {"id": "R008", "title": "First Aid Basics", "type": "theory", "order": 8},
-       {"id": "R009", "title": "Turning on the march", "type": "drill", "order": 9},
-       {"id": "R010", "title": "Cadet Citizenship", "type": "theory", "order": 10},
-       {"id": "R011", "title": "Drill mock", "type": "drill", "order": 11},
-       {"id": "R012", "title": "Theory test mock", "type": "theory", "order": 12},
-   ]
-}
+#Instructors
 
-
-
-
-INSTRUCTORS = [
-   {"id": "I001", "name": "Fg Off Smith", "rank": "Staff", "cadet": ["C001","C002","C005"], "recruit": ["R002","R004","R006"]},
-   {"id": "I002", "name": "Sgt Johnson", "rank": "Staff", "cadet": ["C003","C004","C006"], "recruit": ["R001","R003","R005"]},
-   {"id": "I003", "name": "FS Williams", "rank": "Staff", "cadet": ["C009","C010"], "recruit": ["R007","R008","R009","R010"]},
-   {"id": "I004", "name": "Cpl Davies", "rank": "NCO", "cadet": ["C001","C004","C009"], "recruit": ["R001","R003","R005"]},
-   {"id": "I005", "name": "Cpl Evans", "rank": "NCO", "cadet": ["C003","C007","C010"], "recruit": ["R002","R006","R010"]},
-   {"id": "I006", "name": "Sgt Brown", "rank": "Staff", "cadet": ["C002","C005","C008"], "recruit": ["R004","R008","R011","R012"]},
-   {"id": "I007", "name": "Cpl Harris", "rank": "NCO", "cadet": ["C006","C007","C008"], "recruit": ["R007","R009","R011"]},
-   {"id": "I008", "name": "Fg Off Taylor", "rank": "Staff", "cadet": ["C001","C003","C005","C009"], "recruit": ["R002","R004","R008","R012"]},
-]
-
-
-
+INSTRUCTORS= []
+with open ("instructors.txt", "r", encoding="utf-8") as file:
+     for line in file:
+          line = line.strip().split(",")
+          mydict = {"id":(line[0]),
+                        "name":(line[1]),
+                        "rank":(line[2]),
+                        "cadet":[line[3],line[4],line[5]],
+                        "recruit":[line[6],line[7],line[8]],}
+          INSTRUCTORS.append(mydict)
 
 # Designated recruit instructors
 
-
-RECRUIT_INSTRUCTORS = [
-   {"id": "RI001", "name": "Cpl Jackson", "rank": "NCO",
-    "cadet": ["C002","C006","C008"],
-    "recruit": ["R001","R002","R003","R004","R005","R006","R007","R008","R009","R010","R011","R012"]},
-
-
-   {"id": "RI002", "name": "Cpl Turc", "rank": "NCO",
-    "cadet": ["C003","C007","C010"],
-    "recruit": ["R001","R002","R003","R004","R005","R006","R007","R008","R009","R010","R011","R012"]},
-]
-
+RECRUIT_INSTRUCTORS= []
+with open ("recruitInstructors.txt", "r", encoding="utf-8") as file:
+     for line in file:
+          line = line.strip().split(",")
+          mydict = {"id":(line[0]),
+                        "name":(line[1]),
+                        "rank":(line[2]),
+                        "cadet":[line[3],line[4],line[5]],
+                        "recruit":[line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14],line[15],line[16],line[17]],}
+          RECRUIT_INSTRUCTORS.append(mydict)
 
 RECRUIT_PRIORITY_IDS = {i["id"] for i in RECRUIT_INSTRUCTORS}
 
 
-# incase of no RECRUIT_INSTRUCTORS
+# in case of no RECRUIT_INSTRUCTORS
 ALL_INSTRUCTORS = INSTRUCTORS + RECRUIT_INSTRUCTORS
 
 
@@ -130,16 +112,14 @@ output_box.pack(fill="both", expand=True)
 present_vars = {}
 
 
-
-
 def show(text=""):
-   output_box.insert(tk.END, str(text) + "\n")
+    output_box.insert(tk.END, str(text) + "\n")
 
 
 
 
 def clear_output():
-   output_box.delete("1.0", tk.END)
+    output_box.delete("1.0", tk.END)
 
 
 
@@ -150,160 +130,168 @@ def clear_output():
 
 
 def generate():
-   clear_output()
+    clear_output()
 
 
-   show("=" * 60)
-   show("PARADE NIGHT PROGRAMME")
-   show("=" * 60)
+    show("=" * 60)
+    show("PARADE NIGHT PROGRAMME")
+    show("=" * 60)
 
 
-   present_ids = [i for i, v in present_vars.items() if v.get()]
-   present = [i for i in ALL_INSTRUCTORS if i["id"] in present_ids]
+    present_ids = [i for i, v in present_vars.items() if v.get()]
+    present = [i for i in ALL_INSTRUCTORS if i["id"] in present_ids]
 
 
-   if not present:
-       show("ERROR: No instructors selected.")
-       return
+    if not present:
+         show("ERROR: No instructors selected.")
+         return
 
 
-   try:
-       last_drills_done = int(drill_progress_entry.get())
-   except:
-       last_drills_done = 0
+    try:
+         last_drills_done = int(drill_progress_entry.get())
+    except:
+         last_drills_done = 0
 
 
-   try:
-       last_theory_done = int(theory_progress_entry.get())
-   except:
-       last_theory_done = 0
+    try:
+         last_theory_done = int(theory_progress_entry.get())
+    except:
+         last_theory_done = 0
 
 
-   used_instructors = set()
+    used_instructors = set()
 
 
-   # recruit
+    # recruit
 
 
-   recruit_sorted = sorted(LESSONS["recruit"], key=lambda x: x["order"])
+    recruit_sorted = sorted(LESSONS["recruit"], key=lambda x: x["order"])
 
 
-   def pick_recruit_instructor(lesson):
-       # Build the pool of present, qualified, not-yet-used instructors.
-       qualified = [
-           i for i in present
-           if lesson["id"] in i["recruit"] and i["id"] not in used_instructors
-       ]
-       if not qualified:
-           return None
+    def pick_recruit_instructor(lesson):
+         # Build the pool of present, qualified, not-yet-used instructors.
+         qualified = [
+              i for i in present
+              if lesson["id"] in i["recruit"] and i["id"] not in used_instructors
+         ]
+         if not qualified:
+              return None
 
 
-       # Prefer the designated recruit instructors if any are in the pool.
-       priority_qualified = [i for i in qualified if i["id"] in RECRUIT_PRIORITY_IDS]
-       if priority_qualified:
-           return random.choice(priority_qualified)
+         # Prefer the designated recruit instructors if any are in the pool.
+         priority_qualified = [i for i in qualified if i["id"] in RECRUIT_PRIORITY_IDS]
+         if priority_qualified:
+              return random.choice(priority_qualified)
 
 
-       # Fall back to anyone else who is present and qualified.
-       return random.choice(qualified)
+         # Fall back to anyone else who is present and qualified.
+         return random.choice(qualified)
 
 
-   def next_of_type(rtype, completed_count):
-       type_lessons = [l for l in recruit_sorted if l["type"] == rtype]
-       for index, l in enumerate(type_lessons):
-           if index >= completed_count:
-               instr = pick_recruit_instructor(l)
-               if instr:
-                   return l, instr
-       return None, None
+    def next_of_type(rtype, completed_count):
+         type_lessons = [l for l in recruit_sorted if l["type"] == rtype]
+         for index, l in enumerate(type_lessons):
+              if index >= completed_count:
+                    instr = pick_recruit_instructor(l)
+                    if instr:
+                         return l, instr
+         return None, None
 
 
-   r_drill, r_drill_instr = next_of_type("drill", last_drills_done)
-   if r_drill_instr:
-       used_instructors.add(r_drill_instr["id"])
+    r_drill, r_drill_instr = next_of_type("drill", last_drills_done)
+    if r_drill_instr:
+         used_instructors.add(r_drill_instr["id"])
 
 
-   r_theory, r_theory_instr = next_of_type("theory", last_theory_done)
-   if r_theory_instr:
-       used_instructors.add(r_theory_instr["id"])
+    r_theory, r_theory_instr = next_of_type("theory", last_theory_done)
+    if r_theory_instr:
+         used_instructors.add(r_theory_instr["id"])
+
+     
+    # CADETS excludes anyone already used for a recruit lesson tonight.
+    cadet_options = []
+    for l in LESSONS["cadet"]:
+        qualified = [
+              i for i in present
+              if l["id"] in i["cadet"] and i["id"] not in used_instructors
+         ]
+
+        #Bypass lesson qualification requirement if there is not enough instructors
+        if not qualified:
+            qualified = [i for i in present if i["id"] not in used_instructors]
+
+        if qualified:
+            cadet_options.append((l, qualified))
+
+    if len(cadet_options) < 2:
+        show("Not enough cadet lessons available.")
+        return
 
 
-   # CADETS excludes anyone already used for a recruit lesson tonight.
-   cadet_options = []
-   for l in LESSONS["cadet"]:
-       qualified = [
-           i for i in present
-           if l["id"] in i["cadet"] and i["id"] not in used_instructors
-       ]
-       if qualified:
-           cadet_options.append((l, qualified))
+    random.shuffle(cadet_options)
+    cadet_slots = []
 
 
-   if len(cadet_options) < 2:
-       show("Not enough cadet lessons available.")
-       return
+    for lesson, qualified in cadet_options[:2]:
+         # Reroll in case an instructor was used by the previous slot pick.
+         qualified = [i for i in qualified if i["id"] not in used_instructors]
+
+         if not qualified:
+             qualified = [i for i in present if i["id"] not in used_instructors]
+         if not qualified:
+              continue
+
+         instr = random.choice(qualified)
+         cadet_slots.append((lesson, instr))
+         used_instructors.add(instr["id"])
 
 
-   random.shuffle(cadet_options)
-   cadet_slots = []
+    if len(cadet_slots) < 2:
+         show("Not enough cadet lessons available after avoiding double-booking.")
+         return
 
 
-   for lesson, qualified in cadet_options[:2]:
-       # Reroll in case an instructor was used by the previous slot pick.
-       qualified = [i for i in qualified if i["id"] not in used_instructors]
-       if not qualified:
-           continue
-       instr = random.choice(qualified)
-       cadet_slots.append((lesson, instr))
-       used_instructors.add(instr["id"])
+    # OUTPUT
 
 
-   if len(cadet_slots) < 2:
-       show("Not enough cadet lessons available after avoiding double-booking.")
-       return
+    today = datetime.date.today().strftime("%d/%m/%Y")
 
 
-   # OUTPUT
+    show(f"Date: {today}\n")
+    show("19:10 Opening Parade\n")
 
 
-   today = datetime.date.today().strftime("%d/%m/%Y")
+    show("19:30 LESSON 1")
+    show(f"Cadets: {cadet_slots[0][0]['title']}")
+    show(f"Instructor: {cadet_slots[0][1]['name']}\n")
 
 
-   show(f"Date: {today}\n")
-   show("19:10 Opening Parade\n")
+    if r_drill:
+         show(f"Recruits: {r_drill['title']} [Drill]")
+         show(f"Instructor: {r_drill_instr['name']}\n")
 
 
-   show("19:30 LESSON 1")
-   show(f"Cadets: {cadet_slots[0][0]['title']}")
-   show(f"Instructor: {cadet_slots[0][1]['name']}\n")
+    show("20:15 Break\n")
 
 
-   if r_drill:
-       show(f"Recruits: {r_drill['title']} [Drill]")
-       show(f"Instructor: {r_drill_instr['name']}\n")
+    show("20:30 LESSON 2")
+    show(f"Cadets: {cadet_slots[1][0]['title']}")
+    show(f"Instructor: {cadet_slots[1][1]['name']}\n")
 
 
-   show("20:15 Break\n")
+    if r_theory:
+         show(f"Recruits: {r_theory['title']} [Theory]")
+         show(f"Instructor: {r_theory_instr['name']}\n")
 
 
-   show("20:30 LESSON 2")
-   show(f"Cadets: {cadet_slots[1][0]['title']}")
-   show(f"Instructor: {cadet_slots[1][1]['name']}\n")
+    show("21:45 End")
+    show("=" * 60)
 
 
-   if r_theory:
-       show(f"Recruits: {r_theory['title']} [Theory]")
-       show(f"Instructor: {r_theory_instr['name']}\n")
+    # DISCORD
 
 
-   show("21:45 End")
-   show("=" * 60)
-
-
-   # DISCORD
-
-
-   discord_message = f"""
+    discord_message = f"""
 <@&{NCO_ROLE_ID}>
 
 
@@ -350,7 +338,7 @@ Instructor: {r_theory_instr['name'] if r_theory_instr else 'UNASSIGNED'}
 """
 
 
-   send_to_discord(discord_message)
+    send_to_discord(discord_message)
 
 
 
@@ -361,35 +349,102 @@ Instructor: {r_theory_instr['name'] if r_theory_instr else 'UNASSIGNED'}
 
 
 def view_lessons():
-   clear_output()
-   show("CADET LESSONS:\n")
-   for l in LESSONS["cadet"]:
-       show(f"{l['id']} - {l['title']}")
+    clear_output()
+    show("CADET LESSONS:\n")
+    for l in LESSONS["cadet"]:
+         show(f"{l['id']} - {l['title']}")
 
 
-   show("\nRECRUIT LESSONS:\n")
-   for l in sorted(LESSONS["recruit"], key=lambda x: x["order"]):
-       show(f"{l['id']} [{l['order']}] {l['type']} - {l['title']}")
+    show("\nRECRUIT LESSONS:\n")
+    for l in sorted(LESSONS["recruit"], key=lambda x: x["order"]):
+         show(f"{l['id']} [{l['order']}] {l['type']} - {l['title']}")
 
 
 
 
 def view_instructors():
-   clear_output()
-   show("INSTRUCTORS:\n")
-   for i in INSTRUCTORS:
-       show(f"{i['id']} - {i['name']} ({i['rank']})")
+    clear_output()
+    show("INSTRUCTORS:\n")
+    for i in INSTRUCTORS:
+         show(f"{i['id']} - {i['name']} ({i['rank']})")
 
 
-   show("\nRECRUIT INSTRUCTORS (priority for recruit lessons):\n")
-   for i in RECRUIT_INSTRUCTORS:
-       show(f"{i['id']} - {i['name']} ({i['rank']})")
+    show("\nRECRUIT INSTRUCTORS (priority for recruit lessons):\n")
+    for i in RECRUIT_INSTRUCTORS:
+         show(f"{i['id']} - {i['name']} ({i['rank']})")
 
 
+def open_add_instructor_window():
+     window = tk.Toplevel(root)
+     window.title("Add Instructor")
+     window.geometry("350x350")
+
+     ttk.Label(window, text="ID (e.g. I009):").pack(pady=(10, 0))
+     id_entry = ttk.Entry(window)
+     id_entry.pack()
+
+     ttk.Label(window, text="Rank + name:").pack(pady=(10, 0))
+     name_entry = ttk.Entry(window)
+     name_entry.pack()
+
+     ttk.Label(window, text="Rank (Staff or NCO):").pack(pady=(10, 0))
+     rank_entry = ttk.Entry(window)
+     rank_entry.pack()
+
+     ttk.Label(window, text="Cadet lessons (max 3, comma separated, e.g. C001,C002):").pack(pady=(10, 0))
+     cadet_entry = ttk.Entry(window)
+     cadet_entry.pack()
+
+     ttk.Label(window, text="Recruit lessons (max 3, comma separated, e.g. R001,R002):").pack(pady=(10, 0))
+     recruit_entry = ttk.Entry(window)
+     recruit_entry.pack()
+
+     def submit():
+          id_value = id_entry.get()
+          name_value = name_entry.get()
+          rank_value = rank_entry.get()
+          cadet_value = cadet_entry.get()
+          recruit_value = recruit_entry.get()
+
+          line = ",".join([id_value, name_value, rank_value, cadet_value, recruit_value])
+
+          with open("instructors.txt", "a", encoding="utf-8") as file:
+                file.write(line + "\n")
+
+          window.destroy()
+
+     ttk.Button(window, text="Add Instructor", command=submit).pack(pady=20)
+
+
+def open_add_lesson_window():
+     window = tk.Toplevel(root)
+     window.title("Add lesson")
+     window.geometry("350x350")
+
+     ttk.Label(window, text="ID (e.g. C009):").pack(pady=(10, 0))
+     id_entry = ttk.Entry(window)
+     id_entry.pack()
+
+     ttk.Label(window, text="Lesson Title").pack(pady=(10, 0))
+     title_entry = ttk.Entry(window)
+     title_entry.pack()
+
+     def submit():
+          id_value = id_entry.get()
+          title_value = title_entry.get()
+
+          line = ",".join([id_value, title_value])
+
+          with open("lessonsCadets.txt", "a", encoding="utf-8") as file:
+                file.write(line + "\n")
+
+          window.destroy()
+
+     ttk.Button(window, text="Add lesson", command=submit).pack(pady=20)
 
 
 def exit_app():
-   root.destroy()
+    root.destroy()
 
 
 
@@ -407,13 +462,13 @@ frame.pack(fill="x", padx=10, pady=5)
 
 cols = 2
 for idx, i in enumerate(ALL_INSTRUCTORS):
-   var = tk.BooleanVar(value=True)
-   present_vars[i["id"]] = var
+    var = tk.BooleanVar(value=True)
+    present_vars[i["id"]] = var
 
 
-   ttk.Checkbutton(frame, text=i["name"], variable=var).grid(
-       row=idx // cols, column=idx % cols, sticky="w", padx=10, pady=2
-   )
+    ttk.Checkbutton(frame, text=i["name"], variable=var).grid(
+         row=idx // cols, column=idx % cols, sticky="w", padx=10, pady=2
+    )
 
 
 
@@ -451,7 +506,9 @@ btn_frame.pack(pady=10)
 ttk.Button(btn_frame, text="Generate Programme", command=generate).grid(row=0, column=0, padx=5)
 ttk.Button(btn_frame, text="View Lessons", command=view_lessons).grid(row=0, column=1, padx=5)
 ttk.Button(btn_frame, text="View Instructors", command=view_instructors).grid(row=0, column=2, padx=5)
-ttk.Button(btn_frame, text="Exit", command=exit_app).grid(row=0, column=3, padx=5)
+ttk.Button(btn_frame, text="Add Instructor", command=open_add_instructor_window).grid(row=0, column=3, padx=5)
+ttk.Button(btn_frame, text="Add Lesson", command=open_add_lesson_window).grid(row=0, column=4, padx=5)
+ttk.Button(btn_frame, text="Exit", command=exit_app).grid(row=0, column=5, padx=5)
 
 
 

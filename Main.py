@@ -1,7 +1,7 @@
 import random
 import datetime
 import tkinter as tk
-from tkinter import ttk, scrolledtext
+from tkinter import ttk, scrolledtext, messagebox
 import requests
 
 
@@ -20,15 +20,20 @@ NCO_ROLE_ID = "999662869840920657"
 def send_to_discord(message):
     data = {"content": message}
 
-
     try:
-         response = requests.post(DISCORD_WEBHOOK, json=data)
-         print("Discord status:", response.status_code)
-         print("Response:", response.text)
+        response = requests.post(DISCORD_WEBHOOK, json=data)
 
+        print("Discord status:", response.status_code)
+        print("Response:", response.text)
+
+        if response.status_code == 204:
+            return True
+        else:
+            return False
 
     except Exception as e:
-         print("Error:", e)
+        print("Error:", e)
+        return False
 
 
 
@@ -36,23 +41,29 @@ def send_to_discord(message):
 # LESSON DATA
 
 lessonsCadets= []
-with open ("lessonsCadets.txt", "r", encoding="utf-8") as file:
-     for line in file:
-          line = line.strip().split(",")
-          mydict = {"id":(line[0]),
-                        "title":(line[1]),
-                            "score":int(line[2])}
-          lessonsCadets.append(mydict)
+try:
+    with open ("lessonsCadets.txt", "r", encoding="utf-8") as file:
+         for line in file:
+              line = line.strip().split(",")
+              mydict = {"id":(line[0]),
+                            "title":(line[1]),
+                                "score":int(line[2])}
+              lessonsCadets.append(mydict)
+except FileNotFoundError:
+    print("Error: lessonsCadets.txt could not be found.")
 
 lessonsRecruits= []
-with open ("lessonsRecruits.txt", "r", encoding="utf-8") as file:
-     for line in file:
-          line = line.strip().split(",")
-          mydict = {"id":(line[0]),
-                        "title":(line[1]),
-                            "type":(line[2]),
-                                "order":int(line[3])}
-          lessonsRecruits.append(mydict)
+try:
+    with open ("lessonsRecruits.txt", "r", encoding="utf-8") as file:
+         for line in file:
+              line = line.strip().split(",")
+              mydict = {"id":(line[0]),
+                            "title":(line[1]),
+                                "type":(line[2]),
+                                    "order":int(line[3])}
+              lessonsRecruits.append(mydict)
+except FileNotFoundError:
+    print("Error: lessonsRecruits.txt could not be found.")
 
 #score based system makes new list based of score to give each lesson a different weighting
 
@@ -71,28 +82,34 @@ LESSONS = {"cadet": lessonsCadetsWeighted,
 #Instructors
 
 INSTRUCTORS= []
-with open ("instructors.txt", "r", encoding="utf-8") as file:
-     for line in file:
-          line = line.strip().split(",")
-          mydict = {"id":(line[0]),
-                        "name":(line[1]),
-                            "rank":(line[2]),
-                                "cadet":[line[3],line[4],line[5]],
-                                    "recruit":[line[6],line[7],line[8]]}
-          INSTRUCTORS.append(mydict)
+try:
+    with open ("instructors.txt", "r", encoding="utf-8") as file:
+         for line in file:
+              line = line.strip().split(",")
+              mydict = {"id":(line[0]),
+                            "name":(line[1]),
+                                "rank":(line[2]),
+                                    "cadet":[line[3],line[4],line[5]],
+                                        "recruit":[line[6],line[7],line[8]]}
+              INSTRUCTORS.append(mydict)
+except FileNotFoundError:
+    print("Error: instructors.txt could not be found.")
 
 # Designated recruit instructors
 
 RECRUIT_INSTRUCTORS= []
-with open ("recruitInstructors.txt", "r", encoding="utf-8") as file:
-     for line in file:
-          line = line.strip().split(",")
-          mydict = {"id":(line[0]),
-                            "name":(line[1]),
-                                "rank":(line[2]),
-                                    "cadet":[line[3],line[4],line[5]],
-                                        "recruit":[line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14],line[15],line[16],line[17]],}
-          RECRUIT_INSTRUCTORS.append(mydict)
+try:
+    with open ("recruitInstructors.txt", "r", encoding="utf-8") as file:
+         for line in file:
+              line = line.strip().split(",")
+              mydict = {"id":(line[0]),
+                                "name":(line[1]),
+                                    "rank":(line[2]),
+                                        "cadet":[line[3],line[4],line[5]],
+                                            "recruit":[line[6],line[7],line[8],line[9],line[10],line[11],line[12],line[13],line[14],line[15],line[16],line[17]],}
+              RECRUIT_INSTRUCTORS.append(mydict)
+except FileNotFoundError:
+    print("Error: recruitInstructors.txt could not be found.")
 
 RECRUIT_PRIORITY_IDS = {i["id"] for i in RECRUIT_INSTRUCTORS}
 
@@ -112,7 +129,12 @@ root = tk.Tk()
 root.title("Parade Night Programme Generator")
 root.geometry("900x650")
 
-
+def file_error(filename):
+    messagebox.showerror(
+        "File Error",
+        f"The file '{filename}' could not be found.\n\n"
+        "Please make sure all required files are in the program folder."
+    )
 
 
 output_box = scrolledtext.ScrolledText(root, width=100, height=25)
@@ -133,8 +155,29 @@ def show(text=""):
 def clear_output():
     output_box.delete("1.0", tk.END)
 
+# DISCORD FAIL
 
+def discord_failed_window():
+    window = tk.Toplevel(root)
+    window.title("Discord Error")
+    window.geometry("400x200")
 
+    ttk.Label(
+        window,
+        text="The message didn't send to the Discord server.",
+        wraplength=350
+    ).pack(pady=(35, 10))
+
+    ttk.Label(
+        window,
+        text="Please check your internet connection."
+    ).pack(pady=5)
+
+    ttk.Button(
+        window,
+        text="OK",
+        command=window.destroy
+    ).pack(pady=20)
 
 # MAIN
 
@@ -153,23 +196,47 @@ def generate():
     present_ids = [i for i, v in present_vars.items() if v.get()]
     present = [i for i in ALL_INSTRUCTORS if i["id"] in present_ids]
 
-
     if not present:
-         show("ERROR: No instructors selected.")
-         return
-
-
-    try:
-         last_drills_done = int(drill_progress_entry.get())
-    except:
-         last_drills_done = 0
-
+        messagebox.showerror(
+            "No Instructors",
+            "No instructors have been selected.\n\n"
+            "Please select at least one instructor."
+        )
+        return
 
     try:
-         last_theory_done = int(theory_progress_entry.get())
-    except:
-         last_theory_done = 0
+        last_drills_done = int(drill_progress_entry.get())
 
+        if last_drills_done < 0:
+            messagebox.showerror(
+                "Invalid Input",
+                "Drill lessons completed cannot be negative."
+            )
+            return
+
+    except ValueError:
+        messagebox.showerror(
+            "Invalid Input",
+            "Drill lessons completed must be a whole number."
+        )
+        return
+
+    try:
+        last_theory_done = int(theory_progress_entry.get())
+
+        if last_theory_done < 0:
+            messagebox.showerror(
+                "Invalid Input",
+                "Theory lessons completed cannot be negative."
+            )
+            return
+
+    except ValueError:
+        messagebox.showerror(
+            "Invalid Input",
+            "Theory lessons completed must be a whole number."
+        )
+        return
 
     used_instructors = set()
 
@@ -236,7 +303,11 @@ def generate():
             cadet_options.append((l, qualified))
 
     if len(cadet_options) < 2:
-        show("Not enough cadet lessons available.")
+        messagebox.showerror(
+            "Not Enough Instructors",
+            "There are not enough available instructors "
+            "to create two cadet lessons."
+        )
         return
 
 
@@ -257,10 +328,13 @@ def generate():
          cadet_slots.append((lesson, instr))
          used_instructors.add(instr["id"])
 
-
     if len(cadet_slots) < 2:
-         show("Not enough cadet lessons available after avoiding double-booking.")
-         return
+        messagebox.showerror(
+            "Programme Error",
+            "The programme could not be generated because "
+            "there are not enough instructors available."
+        )
+        return
 
 
     # OUTPUT
@@ -349,8 +423,10 @@ Instructor: {r_theory_instr["name"] if r_theory_instr else "UNASSIGNED"}
 21:45 End
 """
 
+    discord_sent = send_to_discord(discord_message)
 
-    send_to_discord(discord_message)
+    if not discord_sent:
+        discord_failed_window()
 
 
 

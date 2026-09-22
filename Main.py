@@ -69,9 +69,9 @@ except FileNotFoundError:
 
 lessonsCadetsWeighted = []
 for line in lessonsCadets:
-    for order in range(line["score"]):
-        mydict = {"id":(line["id"]),
-                      "title":(line["title"])}
+    for order in range(line['score']):
+        mydict = {"id":(line['id']),
+                      "title":(line['title'])}
         lessonsCadetsWeighted.append(mydict)
 
 print(lessonsCadetsWeighted)
@@ -111,7 +111,7 @@ try:
 except FileNotFoundError:
     print("Error: recruitInstructors.txt could not be found.")
 
-RECRUIT_PRIORITY_IDS = {i["id"] for i in RECRUIT_INSTRUCTORS}
+RECRUIT_PRIORITY_IDS = {i['id'] for i in RECRUIT_INSTRUCTORS}
 
 
 # in case of no RECRUIT_INSTRUCTORS
@@ -194,7 +194,7 @@ def generate():
 
 
     present_ids = [i for i, v in present_vars.items() if v.get()]
-    present = [i for i in ALL_INSTRUCTORS if i["id"] in present_ids]
+    present = [i for i in ALL_INSTRUCTORS if i['id'] in present_ids]
 
     if not present:
         messagebox.showerror(
@@ -244,21 +244,21 @@ def generate():
     # recruit
 
 
-    recruit_sorted = sorted(LESSONS["recruit"], key=lambda x: x["order"])
+    recruit_sorted = sorted(LESSONS["recruit"], key=lambda x: x['order'])
 
 
     def pick_recruit_instructor(lesson):
          # Build the pool of present, qualified, not-yet-used instructors.
          qualified = [
               i for i in present
-              if lesson["id"] in i["recruit"] and i["id"] not in used_instructors
+              if lesson['id'] in i["recruit"] and i['id'] not in used_instructors
          ]
          if not qualified:
               return None
 
 
          # Prefer the designated recruit instructors if any are in the pool.
-         priority_qualified = [i for i in qualified if i["id"] in RECRUIT_PRIORITY_IDS]
+         priority_qualified = [i for i in qualified if i['id'] in RECRUIT_PRIORITY_IDS]
          if priority_qualified:
               return random.choice(priority_qualified)
 
@@ -268,7 +268,7 @@ def generate():
 
 
     def next_of_type(rtype, completed_count):
-         type_lessons = [l for l in recruit_sorted if l["type"] == rtype]
+         type_lessons = [l for l in recruit_sorted if l['type'] == rtype]
          for index, l in enumerate(type_lessons):
               if index >= completed_count:
                     instr = pick_recruit_instructor(l)
@@ -279,12 +279,12 @@ def generate():
 
     r_drill, r_drill_instr = next_of_type("drill", last_drills_done)
     if r_drill_instr:
-         used_instructors.add(r_drill_instr["id"])
+         used_instructors.add(r_drill_instr['id'])
 
 
     r_theory, r_theory_instr = next_of_type("theory", last_theory_done)
     if r_theory_instr:
-         used_instructors.add(r_theory_instr["id"])
+         used_instructors.add(r_theory_instr['id'])
 
      
     # CADETS excludes anyone already used for a recruit lesson tonight.
@@ -292,12 +292,12 @@ def generate():
     for l in LESSONS["cadet"]:
         qualified = [
               i for i in present
-              if l["id"] in i["cadet"] and i["id"] not in used_instructors
+              if l['id'] in i["cadet"] and i['id'] not in used_instructors
          ]
 
         #Bypass lesson qualification requirement if there is not enough instructors
         if not qualified:
-            qualified = [i for i in present if i["id"] not in used_instructors]
+            qualified = [i for i in present if i['id'] not in used_instructors]
 
         if qualified:
             cadet_options.append((l, qualified))
@@ -317,16 +317,16 @@ def generate():
 
     for lesson, qualified in cadet_options[:2]:
          # Reroll in case an instructor was used by the previous slot pick.
-         qualified = [i for i in qualified if i["id"] not in used_instructors]
+         qualified = [i for i in qualified if i['id'] not in used_instructors]
 
          if not qualified:
-             qualified = [i for i in present if i["id"] not in used_instructors]
+             qualified = [i for i in present if i['id'] not in used_instructors]
          if not qualified:
               continue
 
          instr = random.choice(qualified)
          cadet_slots.append((lesson, instr))
-         used_instructors.add(instr["id"])
+         used_instructors.add(instr['id'])
 
     if len(cadet_slots) < 2:
         messagebox.showerror(
@@ -348,26 +348,26 @@ def generate():
 
 
     show("19:30 LESSON 1")
-    show(f"Cadets: {cadet_slots[0][0]["title"]}")
-    show(f"Instructor: {cadet_slots[0][1]["name"]}\n")
+    show(f"Cadets: {cadet_slots[0][0]['title']}")
+    show(f"Instructor: {cadet_slots[0][1]['name']}\n")
 
 
     if r_drill:
-         show(f"Recruits: {r_drill["title"]} [Drill]")
-         show(f"Instructor: {r_drill_instr["name"]}\n")
+         show(f"Recruits: {r_drill['title']} [Drill]")
+         show(f"Instructor: {r_drill_instr['name']}\n")
 
 
     show("20:15 Break\n")
 
 
     show("20:30 LESSON 2")
-    show(f"Cadets: {cadet_slots[1][0]["title"]}")
-    show(f"Instructor: {cadet_slots[1][1]["name"]}\n")
+    show(f"Cadets: {cadet_slots[1][0]['title']}")
+    show(f"Instructor: {cadet_slots[1][1]['name']}\n")
 
 
     if r_theory:
-         show(f"Recruits: {r_theory["title"]} [Theory]")
-         show(f"Instructor: {r_theory_instr["name"]}\n")
+         show(f"Recruits: {r_theory['title']} [Theory]")
+         show(f"Instructor: {r_theory_instr['name']}\n")
 
 
     show("21:45 End")
@@ -395,27 +395,27 @@ Date: {today}
 
 
 19:30 LESSON 1
-Cadets: {cadet_slots[0][0]["title"]}
-Instructor: {cadet_slots[0][1]["name"]}
+Cadets: {cadet_slots[0][0]['title']}
+Instructor: {cadet_slots[0][1]['name']}
 
 
 
 
-Recruits: {r_drill["title"] if r_drill else "None"}
-Instructor: {r_drill_instr["name"] if r_drill_instr else "UNASSIGNED"}
+Recruits: {r_drill['title'] if r_drill else "None"}
+Instructor: {r_drill_instr['name'] if r_drill_instr else "UNASSIGNED"}
 
 
 
 
 20:30 LESSON 2
-Cadets: {cadet_slots[1][0]["title"]}
-Instructor: {cadet_slots[1][1]["name"]}
+Cadets: {cadet_slots[1][0]['title']}
+Instructor: {cadet_slots[1][1]['name']}
 
 
 
 
-Recruits: {r_theory["title"] if r_theory else "None"}
-Instructor: {r_theory_instr["name"] if r_theory_instr else "UNASSIGNED"}
+Recruits: {r_theory['title'] if r_theory else "None"}
+Instructor: {r_theory_instr['name'] if r_theory_instr else "UNASSIGNED"}
 
 
 
@@ -440,12 +440,12 @@ def view_lessons():
     clear_output()
     show("CADET LESSONS:\n")
     for l in lessonsCadets:
-         show(f"{l["id"]} - {l["title"]} - {l["score"]}")
+         show(f"{l['id']} - {l['title']} - {l['score']}")
 
 
     show("\nRECRUIT LESSONS:\n")
-    for l in sorted(LESSONS["recruit"], key=lambda x: x["order"]):
-         show(f"{l["id"]} [{l["order"]}] {l["type"]} - {l["title"]}")
+    for l in sorted(LESSONS["recruit"], key=lambda x: x['order']):
+         show(f"{l['id']} [{l['order']}] {l['type']} - {l['title']}")
 
 
 
@@ -454,12 +454,12 @@ def view_instructors():
     clear_output()
     show("INSTRUCTORS:\n")
     for i in INSTRUCTORS:
-         show(f"{i["id"]} - {i["name"]} ({i["rank"]})")
+         show(f"{i['id']} - {i['name']} ({i['rank']})")
 
 
     show("\nRECRUIT INSTRUCTORS (priority for recruit lessons):\n")
     for i in RECRUIT_INSTRUCTORS:
-         show(f"{i["id"]} - {i["name"]} ({i["rank"]})")
+         show(f"{i['id']} - {i['name']} ({i['rank']})")
 
 
 def open_add_lesson_window():
@@ -544,7 +544,7 @@ def lessonScore():
     lesson_titles = []
 
     for lesson in lessonsCadets:
-        lesson_titles.append(lesson["title"])
+        lesson_titles.append(lesson['title'])
 
     # Variable that stores the selected lesson
 
@@ -635,10 +635,10 @@ frame.pack(fill="x", padx=10, pady=5)
 cols = 2
 for idx, i in enumerate(ALL_INSTRUCTORS):
     var = tk.BooleanVar(value=True)
-    present_vars[i["id"]] = var
+    present_vars[i['id']] = var
 
 
-    ttk.Checkbutton(frame, text=i["name"], variable=var).grid(
+    ttk.Checkbutton(frame, text=i['name'], variable=var).grid(
          row=idx // cols, column=idx % cols, sticky="w", padx=10, pady=2
     )
 
